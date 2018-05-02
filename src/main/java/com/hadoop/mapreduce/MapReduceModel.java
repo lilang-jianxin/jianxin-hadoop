@@ -30,12 +30,14 @@ public class MapReduceModel extends Configured implements Tool {
        protected void map(LongWritable key, Text value, Context context) throws IOException, InterruptedException {
            super.map(key, value, context);
 
+
        }
    }
   public static class ModelReducer extends Reducer<Text, IntWritable, Text, IntWritable>{
       @Override
       protected void reduce(Text key, Iterable<IntWritable> values, Context context) throws IOException, InterruptedException {
           super.reduce(key, values, context);
+
       }
   }
 
