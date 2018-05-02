@@ -29,7 +29,7 @@ public class MapReduceModel extends Configured implements Tool {
        @Override
        protected void map(LongWritable key, Text value, Context context) throws IOException, InterruptedException {
            super.map(key, value, context);
-  //电饭锅
+      //电饭锅
 
        }
    }
