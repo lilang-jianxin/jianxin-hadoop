@@ -2,6 +2,7 @@ package com.hadoop.mapreduce;
 
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.conf.Configured;
+import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.io.IntWritable;
 import org.apache.hadoop.io.LongWritable;
@@ -19,7 +20,8 @@ import java.util.StringTokenizer;
 
 /**
  * @program: jianxin-hadoop
- * @description: 单词计数
+ * @description: 单词计数 java.lang.ClassNotFoundException: hadoop运行的时候自己编译WordCount执行报错  解决办法：ChineseWordCount增加命名空间.
+                   bin/hadoop jar /home/lilang/jianxin.hadoop.wordcount.jar com.hadoop.mapreduce.CountWord  /lilang_wordcount_input/hello.txt  /lilang_wordcount_output
  * @author: jianxin
  * @create: 2018-05-02 11:49
  **/
@@ -73,6 +75,10 @@ public class CountWord extends Configured implements Tool {
         job.setOutputKeyClass(Text.class);
         job.setOutputValueClass(IntWritable.class);
         Path pathout=new Path(args[1]);
+        FileSystem fileSystem=pathout.getFileSystem(configuration);
+        if (fileSystem.exists(pathout)){
+            fileSystem.delete(pathout,true);
+        }
         FileOutputFormat.setOutputPath(job,pathout);
         return job.waitForCompletion(true)?0:1;
     }
