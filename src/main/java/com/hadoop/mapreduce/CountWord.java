@@ -6,6 +6,7 @@ import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.io.IntWritable;
 import org.apache.hadoop.io.LongWritable;
+import org.apache.hadoop.io.ObjectWritable;
 import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.Job;
 import org.apache.hadoop.mapreduce.Mapper;
@@ -14,6 +15,7 @@ import org.apache.hadoop.mapreduce.lib.input.FileInputFormat;
 import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
 import org.apache.hadoop.util.Tool;
 import org.apache.hadoop.util.ToolRunner;
+import org.apache.hadoop.yarn.webapp.hamlet.HamletSpec;
 
 import java.io.IOException;
 import java.util.StringTokenizer;
@@ -35,13 +37,24 @@ public class CountWord extends Configured implements Tool {
 
         @Override
         protected void map(LongWritable key, Text value, Context context) throws IOException, InterruptedException {
-            super.map(key, value, context);
-            if (value != null) {
-                StringTokenizer line = new StringTokenizer(value.toString());
-                while (line.hasMoreTokens()) {
-                    word.set(line.nextToken());
-                    context.write(word, one);
-                }
+
+            //控制台中看不到但是可以到hadoop安装目录下的logs/userlogs/container_****/stdout中看到
+            System.out.println(value);
+            if (value==null){
+                return;
+            }
+
+
+            String lineValue = value.toString();
+
+            StringTokenizer stringTokenizer = new StringTokenizer(lineValue);
+            while(stringTokenizer.hasMoreTokens()){
+                // get word value
+                String wordValue = stringTokenizer.nextToken();
+                // set value
+                word.set(wordValue);;
+                // output
+                context.write(word, one);
             }
         }
     }
@@ -51,12 +64,17 @@ public class CountWord extends Configured implements Tool {
 
         @Override
         protected void reduce(Text key, Iterable<IntWritable> values, Context context) throws IOException, InterruptedException {
-            super.reduce(key, values, context);
-            int sum = 0;
-            for (IntWritable val : values) {
-                sum += val.get();
+            // sum tmp
+            int sum= 0 ;
+            // iterator
+            for(IntWritable value: values){
+                // total
+                sum += value.get();
             }
+            // set value
             result.set(sum);
+
+            // output
             context.write(key, result);
         }
     }
@@ -68,6 +86,7 @@ public class CountWord extends Configured implements Tool {
         job.setJarByClass(this.getClass());
         Path pathin=new Path(args[0]);
         FileInputFormat.addInputPath(job,pathin);
+
         job.setMapperClass(TokennizerMapper.class);
         job.setMapOutputKeyClass(Text.class);
         job.setMapOutputValueClass(IntWritable.class);
@@ -85,9 +104,7 @@ public class CountWord extends Configured implements Tool {
 
     public static void main(String[] args) {
         Configuration configuration=new Configuration();
-        //snappy压缩设置
-        configuration.set("mapreduce.map.output.compress", "true");
-        configuration.set("mapreduce.map.output.compress.codec", "org.apache.hadoop.io.compress.SnappyCodec");
+        System.out.println("****************main下的输出可以直接在控制台中看到****************");
         int status=0;
         try {
             status= ToolRunner.run(configuration,new CountWord(),args);
