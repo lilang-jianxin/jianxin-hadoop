@@ -23,7 +23,7 @@ import java.io.IOException;
  * @create: 2018-05-04 08:33
  **/
 public class Dedup extends Configured implements Tool {
-    //行号当做key，需要用整形存储 行内有重复不容易去掉
+    //行号当做key，需要用整行存储 行内有重复不能去掉 行间重复去掉
     public static class DedupMap extends Mapper<LongWritable,Text,Text,Text>{
         private  static Text line=new Text();
         @Override
