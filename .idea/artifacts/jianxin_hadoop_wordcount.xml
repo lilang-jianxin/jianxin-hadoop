@@ -1,8 +1,0 @@
-<component name="ArtifactManager">
-  <artifact type="jar" build-on-make="true" name="jianxin.hadoop.wordcount">
-    <output-path>$PROJECT_DIR$/out/artifacts/jianxin_hadoop_wordcount</output-path>
-    <root id="archive" name="jianxin.hadoop.wordcount.jar">
-      <element id="module-output" name="jianxin-hadoop" />
-    </root>
-  </artifact>
-</component>

@@ -1,8 +1,0 @@
-<component name="ArtifactManager">
-  <artifact type="jar" name="deup_two">
-    <output-path>$PROJECT_DIR$/out/artifacts/deup_two</output-path>
-    <root id="archive" name="deup_two.jar">
-      <element id="module-output" name="jianxin-hadoop" />
-    </root>
-  </artifact>
-</component>
